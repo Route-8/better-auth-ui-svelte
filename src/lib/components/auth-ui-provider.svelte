@@ -553,8 +553,19 @@
 			useListOrganizations: authClient.useListOrganizations,
 			useHasPermission: (params) =>
 				useAuthData<{ error: null; success: boolean }>({
-					queryFn: async () =>
-						asResult<{ error: null; success: boolean }>(
+					queryFn: async () => {
+						// Skip the permission check when there is no active
+						// organization. This prevents 401s during account
+						// switches: the organization-refetcher clears the
+						// active-org atom (in a $effect.pre) before this
+						// queryFn runs, so we see null and degrade to
+						// "no permission" without making the network call.
+						const activeOrgStore = authClient.useActiveOrganization?.();
+						const activeOrg = activeOrgStore?.get?.();
+						if (!activeOrg?.data) {
+							return { data: { error: null, success: false }, error: null };
+						}
+						return asResult<{ error: null; success: boolean }>(
 							await authClient.$fetch<{ error: null; success: boolean }>(
 								'/organization/has-permission',
 								{
@@ -562,7 +573,8 @@
 									body: params
 								}
 							)
-						),
+						);
+					},
 					cacheKey: `hasPermission:${JSON.stringify(params)}`
 				}) as AuthHook<{ error: null; success: boolean }>,
 			useInvitation: (params) =>
