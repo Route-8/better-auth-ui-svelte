@@ -43,6 +43,7 @@
 		authClient,
 		basePath,
 		credentials,
+		emailVerification,
 		localization: contextLocalization,
 		viewPaths,
 		navigate,
@@ -151,6 +152,24 @@
 			} catch (error) {
 				form.setFieldValue('password', '');
 				resetCaptcha();
+
+				// If the account exists but its email isn't verified, route the
+				// user to the verify-email view so they can re-request the
+				// verification email, mirroring the sign-up flow.
+				const errorCode =
+					error && typeof error === 'object' && 'error' in error
+						? (error as { error?: { code?: string } }).error?.code
+						: undefined;
+				if (emailVerification && errorCode === 'EMAIL_NOT_VERIFIED') {
+					// Only forward the email when the entered value is actually an
+					// email address — with username sign-in the value may be a
+					// username, which the verify-email view can't use.
+					const emailParam = isValidEmail(value.email)
+						? `?email=${encodeURIComponent(value.email)}`
+						: '';
+					navigate(`${basePath}/${viewPaths.VERIFY_EMAIL}${emailParam}`);
+					return;
+				}
 
 				toast.error(getLocalizedError({ error, localization }));
 				throw error;
