@@ -1,3 +1,4 @@
+import type { LucideIcon } from '@lucide/svelte';
 import type { PaginationState } from '@tanstack/table-core';
 import type { AuthLocalization } from './index.js';
 import type { AdminViewPath } from '$lib/utils/view-paths.js';
@@ -93,7 +94,7 @@ export interface AdminTableAction<T> {
 	/** Display label for the action */
 	label: string;
 	/** Optional Lucide icon component */
-	icon?: typeof import('@lucide/svelte').Icon;
+	icon?: LucideIcon;
 	/** Click handler receiving the item */
 	onClick: (item: T) => void | Promise<void>;
 	/** Optional variant for styling (e.g., 'destructive') */
