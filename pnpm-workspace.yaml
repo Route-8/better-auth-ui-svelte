@@ -3,5 +3,16 @@ allowBuilds:
 onlyBuiltDependencies:
   - esbuild
   - '@tailwindcss/oxide'
+minimumReleaseAgeExclude:
+  - '@better-auth/api-key'
+  - '@better-auth/core'
+  - '@better-auth/drizzle-adapter'
+  - '@better-auth/kysely-adapter'
+  - '@better-auth/memory-adapter'
+  - '@better-auth/mongo-adapter'
+  - '@better-auth/passkey'
+  - '@better-auth/prisma-adapter'
+  - '@better-auth/telemetry'
+  - better-auth
 packages:
   - .
