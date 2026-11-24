@@ -28,7 +28,6 @@
 	let {
 		className,
 		classNames,
-		// eslint-disable-next-line no-useless-assignment -- $bindable default is the value parents read before the sync effect overwrites it
 		isSubmitting = $bindable(false),
 		localization: propLocalization,
 		setIsSubmitting
